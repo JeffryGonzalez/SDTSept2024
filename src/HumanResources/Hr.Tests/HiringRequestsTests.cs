@@ -11,7 +11,7 @@ public class HiringRequestsTests
     [InlineData("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")]
     public void GoodNames(string name)
     {
-        var _ = EmployeeHiringRequest.CreateHiringRequest(name, "IT");
+        var _ = EmployeeHiringRequest.CreateHiringRequest(name, Departments.SALES);
 
     }
 
@@ -25,7 +25,19 @@ public class HiringRequestsTests
     {
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-        EmployeeHiringRequest.CreateHiringRequest(name, "tacos"));
+        EmployeeHiringRequest.CreateHiringRequest(name, Departments.SALES));
 
     }
+
+
+}
+
+
+public static class HiringRequestSamples
+{
+    public static EmployeeHiringRequest BobInIt()
+    {
+        return EmployeeHiringRequest.CreateHiringRequest("Robert", Departments.IT);
+    }
+    public static EmployeeHiringRequest SueInSales = EmployeeHiringRequest.CreateHiringRequest("Susan", Departments.SALES);
 }

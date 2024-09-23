@@ -11,28 +11,13 @@ public class EmployeeHiringService
             throw new ArgumentOutOfRangeException(nameof(request.Name));
         }
 
-        return new Employee("99", "99", "99", 5);
-    }
-}
-
-
-public record EmployeeHiringRequest
-
-{
-    public string Name { get; private set; } = string.Empty;
-    public string Department { get; private set; } = string.Empty;
-    // A "factory" method.
-    public static EmployeeHiringRequest CreateHiringRequest(string name, string department)
-    {
-        if (string.IsNullOrEmpty(name))
-        {
-            throw new ArgumentOutOfRangeException();
-        }
-        return new EmployeeHiringRequest { Name = name, Department = department };
+        var salary = request.Department == Departments.IT ? 180000M : 42000M;
+        var id = request.Department == Departments.IT ? "I" : "S";
+        return new Employee(id + Guid.NewGuid().ToString(), request.Name, request.Department, salary);
     }
 }
 
 
 
-public record Employee(string Id, string Name, string Department, decimal Salary);
+public record Employee(string Id, string Name, Departments Department, decimal Salary, DateTimeOffset HireDate);
 

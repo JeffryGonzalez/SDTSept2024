@@ -1,27 +1,54 @@
-﻿namespace Hr.Tests;
+﻿using Hr.Api;
+
+namespace Hr.Tests;
 public class EmployeeHiringServiceTests
 {
 
     [Fact]
-    public void Tacos()
+    public void HiringAnItEmployee()
     {
         // Given
-        //var service = new EmployeeHiringService();
-        //var request = new EmployeeHiringRequest("", "JANITOR");
+        var service = new EmployeeHiringService();
+        var candidate = HiringRequestSamples.BobInIt();
 
+        var expectedEmployee = new Employee(
+            "I9b4e5a5a-3975-4396-8da3-2bd6a85e25ec",
+            candidate.Name, candidate.Department,
+            180_000M,
+            new DateTimeOffset(2024, 9, 23, 3, 14, 00, TimeSpan.FromHours(-4))
+            );
 
+        // when
+        var employee = service.Hire(candidate);
 
-        //// When
-        //var ex = Assert.Throws<ArgumentOutOfRangeException>(() => service.Hire(request));
+        // Then
+        Assert.Equal(expectedEmployee, employee);
+        //Assert.Equal(180000M, employee.Salary);
+        //Assert.Equal(candidate.Department, employee.Department);
+        //Assert.Equal(candidate.Name, employee.Name);
+        //Assert.StartsWith("I", employee.Id);
 
-        //Assert.Equal(nameof(EmployeeHiringRequest.Name), ex.ParamName);
+    }
+
+    [Fact]
+    public void HiringANonItEmployee()
+    {
+        var service = new EmployeeHiringService();
+        var candidate = HiringRequestSamples.SueInSales;
+
+        // when
+        var employee = service.Hire(candidate);
+
+        // Then
+        Assert.Equal(42000M, employee.Salary);
+        Assert.Equal(candidate.Department, employee.Department);
+        Assert.Equal(candidate.Name, employee.Name);
+        Assert.StartsWith("S", employee.Id);
     }
 }
 
 /* Todo:
  * 
-// name is required. Cannot be null, cannot be empty. Has to be at least 5 characters, and no more than 200
-// department is required, and it has to have the values of "IT", "HR", "CEO", "SALES", "SUPPORT"
 If you are are in the IT department:
 Your employee ID starts with I, then a unique identifier.
 Your starting salary is $180,000.
