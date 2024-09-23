@@ -1,21 +1,7 @@
-﻿namespace Hr.Tests;
+﻿
+namespace Hr.Tests;
 public class EmployeeHiringServiceTests
 {
-
-    [Fact]
-    public void Tacos()
-    {
-        // Given
-        //var service = new EmployeeHiringService();
-        //var request = new EmployeeHiringRequest("", "JANITOR");
-
-
-
-        //// When
-        //var ex = Assert.Throws<ArgumentOutOfRangeException>(() => service.Hire(request));
-
-        //Assert.Equal(nameof(EmployeeHiringRequest.Name), ex.ParamName);
-    }
 }
 
 /* Todo:
