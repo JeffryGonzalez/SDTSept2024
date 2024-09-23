@@ -1,51 +1,95 @@
 ﻿using Hr.Api;
+using Microsoft.Extensions.Time.Testing;
+using NSubstitute;
 
 namespace Hr.Tests;
 public class EmployeeHiringServiceTests
 {
 
-    [Fact]
-    public void HiringAnItEmployee()
+    [Theory]
+    [MemberData(nameof(ItCandidates))]
+    public void HiringAnItEmployee(EmployeeHiringRequest candidate)
     {
         // Given
-        var service = new EmployeeHiringService();
-        var candidate = HiringRequestSamples.BobInIt();
+        var currentTime = new DateTimeOffset(2024, 9, 23, 3, 14, 00, TimeSpan.FromHours(-4));
+        var testTime = new FakeTimeProvider(currentTime);
+
+        var fakeIdGenerator = Substitute.For<IGenerateEmployeeIds>();
+        fakeIdGenerator.GetIdFor(Departments.IT).Returns("some-unique-it-identifier");
+        var service = new EmployeeHiringService(testTime, fakeIdGenerator);
+
 
         var expectedEmployee = new Employee(
-            "I9b4e5a5a-3975-4396-8da3-2bd6a85e25ec",
+            "some-unique-it-identifier",
             candidate.Name, candidate.Department,
             180_000M,
-            new DateTimeOffset(2024, 9, 23, 3, 14, 00, TimeSpan.FromHours(-4))
+           currentTime
             );
 
         // when
-        var employee = service.Hire(candidate);
+        var employee = service.Hire(candidate); // SUT
 
         // Then
         Assert.Equal(expectedEmployee, employee);
-        //Assert.Equal(180000M, employee.Salary);
-        //Assert.Equal(candidate.Department, employee.Department);
-        //Assert.Equal(candidate.Name, employee.Name);
-        //Assert.StartsWith("I", employee.Id);
+
 
     }
 
-    [Fact]
-    public void HiringANonItEmployee()
+    [Theory]
+    [MemberData(nameof(NonIteCandidates))]
+    public void HiringNonItEmployees(EmployeeHiringRequest candidate)
     {
-        var service = new EmployeeHiringService();
-        var candidate = HiringRequestSamples.SueInSales;
+        // Given
+        // 4-20-69 - Jeff's Birthday.
+        var currentTime = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
+        var testTime = new FakeTimeProvider(currentTime);
+
+        var fakeIdGenerator = Substitute.For<IGenerateEmployeeIds>();
+        fakeIdGenerator.GetIdFor(Arg.Any<Departments>()).Returns("some-non-it-identifier");
+        var service = new EmployeeHiringService(testTime, fakeIdGenerator);
+
+
+        var expectedEmployee = new Employee(
+            "some-non-it-identifier",
+            candidate.Name, candidate.Department,
+            42_000M,
+           currentTime
+            );
 
         // when
-        var employee = service.Hire(candidate);
+        var employee = service.Hire(candidate); // SUT
 
         // Then
-        Assert.Equal(42000M, employee.Salary);
-        Assert.Equal(candidate.Department, employee.Department);
-        Assert.Equal(candidate.Name, employee.Name);
-        Assert.StartsWith("S", employee.Id);
+        Assert.Equal(expectedEmployee, employee);
+
+
     }
+
+
+
+    public static IEnumerable<object[]> ItCandidates()
+    {
+        var itFolks = HiringRequestSamples.SampleHiringRequests().Where(h => h.Department == Departments.IT);
+        var response = new List<object[]>();
+        foreach (var f in itFolks)
+        {
+            response.Add(new object[] { f });
+        }
+        return response;
+    }
+    public static IEnumerable<object[]> NonIteCandidates()
+    {
+        var itFolks = HiringRequestSamples.SampleHiringRequests().Where(h => h.Department != Departments.IT);
+        var response = new List<object[]>();
+        foreach (var f in itFolks)
+        {
+            response.Add(new object[] { f });
+        }
+        return response;
+    }
+
 }
+
 
 /* Todo:
  * 
@@ -59,3 +103,19 @@ Your employee ID starts with "S", then a unique identifier.
 Your starting salary is $42,000.
 
 */
+
+public class TestingIdGenerator : IGenerateEmployeeIds
+{
+    public string GetIdFor(Departments department)
+    {
+        if (department == Departments.IT)
+        {
+            return "some-unique-it-identifier";
+
+        }
+        else
+        {
+            return null;
+        }
+    }
+}

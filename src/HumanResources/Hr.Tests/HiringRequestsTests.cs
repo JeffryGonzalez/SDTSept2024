@@ -39,5 +39,15 @@ public static class HiringRequestSamples
     {
         return EmployeeHiringRequest.CreateHiringRequest("Robert", Departments.IT);
     }
+
+    public static IEnumerable<EmployeeHiringRequest> SampleHiringRequests()
+    {
+        yield return BobInIt();
+        yield return SueInSales;
+        yield return EmployeeHiringRequest.CreateHiringRequest("Joseph Schmidt", Departments.SUPPORT);
+        yield return EmployeeHiringRequest.CreateHiringRequest("Patricia Jones", Departments.CEO);
+        yield return EmployeeHiringRequest.CreateHiringRequest("Sandy F", Departments.IT);
+
+    }
     public static EmployeeHiringRequest SueInSales = EmployeeHiringRequest.CreateHiringRequest("Susan", Departments.SALES);
 }
