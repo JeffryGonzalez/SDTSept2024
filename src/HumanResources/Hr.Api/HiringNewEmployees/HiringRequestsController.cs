@@ -1,22 +1,47 @@
-﻿namespace Hr.Api.HiringNewEmployees;
+﻿using FluentValidation;
+
+namespace Hr.Api.HiringNewEmployees;
 
 public class HiringRequestsController(TimeProvider clock, IGenerateSlugIdsForEmployees employeeIdGenerator) : ControllerBase
 {
     [HttpPost("/departments/IT/hiring-requests")]
     public async Task<ActionResult> HireAnEmployee(
-        [FromBody] EmployeeHiringRequestModel request
+        [FromBody] EmployeeHiringRequestModel request,
+        [FromServices] EmployeeHiringRequestValidator validator
         )
     {
-        string id = await employeeIdGenerator.GenerateIdForAsync(request.Name);
+        var validations = await validator.ValidateAsync(request);
+
+        if (!validations.IsValid)
+        {
+            return BadRequest(validations.ToDictionary());
+        }
+        string id = await employeeIdGenerator.GenerateIdForItAsync(request.Name);
+        // if the new employee is in IT, then send a notification to the CIO because he likes to buy them coffee.
         return Ok(new EmployeeHiringRequestResult(id, request.Name, "IT", 182000M, clock.GetUtcNow()));
     }
 }
 
-public record EmployeeHiringRequestModel(string Name);
+public record EmployeeHiringRequestModel
+{
+
+
+    public string Name { get; set; } = string.Empty;
+};
+
+public class EmployeeHiringRequestValidator : AbstractValidator<EmployeeHiringRequestModel>
+{
+    public EmployeeHiringRequestValidator()
+    {
+
+        RuleFor(e => e.Name).NotEmpty().MinimumLength(5).MaximumLength(200);
+    }
+}
 
 public record EmployeeHiringRequestResult(string Id, string Name, string Department, decimal Salary, DateTimeOffset HireDate);
 
 public interface IGenerateSlugIdsForEmployees
 {
-    Task<string> GenerateIdForAsync(string name);  // Bob Smith - ISMITH-BOB
+    Task<string> GenerateIdForItAsync(string name);  // Bob Smith - ISMITH-BOB
+    Task<string> GenerateIdForNonItAsync(string name);
 }

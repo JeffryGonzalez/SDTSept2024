@@ -1,4 +1,6 @@
+using FluentValidation;
 using Hr.Api.Controllers;
+using Hr.Api.HiringNewEmployees;
 using HtTemplate.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IGenerateEmployeeIds, StandardIdGenerator>();
 builder.Services.AddSingleton<EmployeeHiringService>();
+builder.Services.AddScoped<IGenerateSlugIdsForEmployees, EmployeeSlugGenerator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EmployeeHiringRequestValidator>(); // this is werid, but I'll show you why they do it this way tomorrow.
+
 
 var app = builder.Build();
 
@@ -32,3 +37,4 @@ app.Run(); //
 // Top Level Statements - 
 
 public partial class Program { }
+

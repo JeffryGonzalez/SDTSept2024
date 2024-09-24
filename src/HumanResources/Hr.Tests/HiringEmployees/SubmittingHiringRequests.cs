@@ -19,20 +19,22 @@ public class SubmittingHiringRequests
     {
         var dateOfHire = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
         var stubbedIdGenerator = Substitute.For<IGenerateSlugIdsForEmployees>();
-        stubbedIdGenerator.GenerateIdForAsync(name).Returns(name.ToUpper());
+        stubbedIdGenerator.GenerateIdForItAsync(name).Returns(name.ToUpper());
         var fakeClock = new FakeTimeProvider(dateOfHire);
         var host = await AlbaHost.For<Program>(config =>
         {   // When you want to replace a service with another one.
             config.ConfigureTestServices(services =>
             {
                 services.AddSingleton<TimeProvider>((sp) => fakeClock);
-                services.AddSingleton<IGenerateSlugIdsForEmployees>(sp => stubbedIdGenerator);
+                var fakeUniqueChecker = Substitute.For<ICheckForSlugUniqueness>();
+                fakeUniqueChecker.IsUniqueIdAsync(Arg.Any<string>()).Returns(true);
+                services.AddScoped<ICheckForSlugUniqueness>((sp) => fakeUniqueChecker);
             });
         });
 
-        var hiringRequest = new EmployeeHiringRequestModel(name);
+        var hiringRequest = new EmployeeHiringRequestModel { Name = name };
 
-        var expectedResponse = new EmployeeHiringRequestResult(name.ToUpper(), name, "IT", 182000M, dateOfHire);
+        var expectedResponse = new EmployeeHiringRequestResult("ISMITH-BOB", name, "IT", 182000M, dateOfHire);
         var response = await host.Scenario(api =>
          {
              api.Post.Json(hiringRequest).ToUrl("/departments/IT/hiring-requests");
