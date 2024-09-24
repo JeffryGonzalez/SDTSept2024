@@ -14,6 +14,8 @@ public class EmployeeHiringService(TimeProvider clock, IGenerateEmployeeIds idCr
         var salary = request.Department == Departments.IT ? 180000M : 42000M;
         // when in doubt, WTCYWYH
         string id = idCreator.GetIdFor(request.Department);
+        // we need to send a message to the email service to send them their login information.
+
         return new Employee(id, request.Name, request.Department, salary, clock.GetUtcNow());
     }
 }
