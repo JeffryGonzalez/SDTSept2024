@@ -9,7 +9,7 @@ Send us an entity like this:
 ```json
 {
     "name": "Bob Smith",
-    "department": "IT"
+    "department":   
 }
 
 ```
@@ -27,7 +27,8 @@ Send us an entity like this:
     "id": "I99999",
     "name": "Bob Smith",
     "department" "IT",
-    "salary": "182000"
+    "salary": "182000",
+    "hireDate": "UTC TIME"
 }
 ```
 

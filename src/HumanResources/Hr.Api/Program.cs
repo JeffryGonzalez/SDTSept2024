@@ -1,3 +1,4 @@
+using Hr.Api.Controllers;
 using HtTemplate.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,9 @@ builder.Services.AddCustomServices();
 builder.Services.AddCustomOasGeneration();
 
 builder.Services.AddControllers();
+
+builder.Services.AddSingleton<IGenerateEmployeeIds, StandardIdGenerator>();
+builder.Services.AddSingleton<EmployeeHiringService>();
 
 var app = builder.Build();
 
@@ -23,4 +27,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+app.Run(); // 
+
+// Top Level Statements - 
+
+public partial class Program { }

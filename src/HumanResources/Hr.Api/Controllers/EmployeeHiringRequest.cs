@@ -1,4 +1,4 @@
-﻿namespace Hr.Api;
+﻿namespace Hr.Api.Controllers;
 
 //// department is required, and it has to have the values of "IT", "HR", "CEO", "SALES", "SUPPORT"
 

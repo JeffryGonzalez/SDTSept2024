@@ -1,4 +1,4 @@
-﻿namespace Hr.Api;
+﻿namespace Hr.Api.Controllers;
 
 public class StandardIdGenerator : IGenerateEmployeeIds
 {

@@ -1,5 +1,4 @@
-﻿
-using Hr.Api;
+﻿using Hr.Api.Controllers;
 
 namespace Hr.Tests;
 public class HiringRequestsTests

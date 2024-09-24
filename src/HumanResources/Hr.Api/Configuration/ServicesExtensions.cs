@@ -18,7 +18,7 @@ public static class ServicesExtensions
         services.Configure<JsonOptions>(DefaultJsonOptions.Configure);
         services.AddAuthentication().AddJwtBearer();
         services.AddFeatureManagement();
-        services.AddSingleton(() => TimeProvider.System);
+        services.AddSingleton(() => TimeProvider.System); // TODO: Is this added by default now?
         services.AddHttpContextAccessor();
 
         return services;

@@ -1,3 +1,19 @@
 @Api_HostAddress = http://localhost:1337
 
 ###
+
+POST {{Api_HostAddress}}/employees
+Content-Type: application/json
+
+{
+    "name": "Joseph",
+    "department": "CEO"
+}
+
+###
+POST {{Api_HostAddress}}/departments/hr/hiring-requests
+Content-Type: application/json
+
+{
+  "name": "Bob Smith"
+}

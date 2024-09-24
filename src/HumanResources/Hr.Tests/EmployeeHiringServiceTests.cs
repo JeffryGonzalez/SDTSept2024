@@ -1,4 +1,4 @@
-﻿using Hr.Api;
+﻿using Hr.Api.Controllers;
 using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 
