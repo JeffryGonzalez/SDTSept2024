@@ -1,17 +1,38 @@
 ﻿
 using Alba;
 using Hr.Api.HiringNewEmployees;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Time.Testing;
+using NSubstitute;
 
 namespace Hr.Tests.HiringEmployees;
 public class SubmittingHiringRequests
 {
-    [Fact]
-    public async Task Submitting()
+    [Theory]
+    [Trait("Category", "System")]
+    [Trait("Feature", "SomeFeatureName")]
+    [Trait("Bug", "83989389")]
+    [InlineData("Bob Smith")]
+    [InlineData("Jill Jones")]
+    public async Task SubmittingAHiringRequestForIt(string name)
     {
-        var host = await AlbaHost.For<Program>();
+        var dateOfHire = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
+        var stubbedIdGenerator = Substitute.For<IGenerateSlugIdsForEmployees>();
+        stubbedIdGenerator.GenerateIdForAsync(name).Returns(name.ToUpper());
+        var fakeClock = new FakeTimeProvider(dateOfHire);
+        var host = await AlbaHost.For<Program>(config =>
+        {   // When you want to replace a service with another one.
+            config.ConfigureTestServices(services =>
+            {
+                services.AddSingleton<TimeProvider>((sp) => fakeClock);
+                services.AddSingleton<IGenerateSlugIdsForEmployees>(sp => stubbedIdGenerator);
+            });
+        });
 
-        var hiringRequest = new EmployeeHiringRequestModel("Bob Smith");
-        var expectedResponse = new EmployeeHiringRequestResult("Bob Smith");
+        var hiringRequest = new EmployeeHiringRequestModel(name);
+
+        var expectedResponse = new EmployeeHiringRequestResult(name.ToUpper(), name, "IT", 182000M, dateOfHire);
         var response = await host.Scenario(api =>
          {
              api.Post.Json(hiringRequest).ToUrl("/departments/IT/hiring-requests");
@@ -21,6 +42,8 @@ public class SubmittingHiringRequests
 
         Assert.NotNull(returnedBody);
         Assert.Equal(expectedResponse, returnedBody);
+
+
     }
 
 }

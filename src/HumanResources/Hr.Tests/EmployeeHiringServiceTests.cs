@@ -8,6 +8,7 @@ public class EmployeeHiringServiceTests
 
     [Theory]
     [MemberData(nameof(ItCandidates))]
+    [Trait("Category", "Unit")]
     public void HiringAnItEmployee(EmployeeHiringRequest candidate)
     {
         // Given
@@ -37,6 +38,7 @@ public class EmployeeHiringServiceTests
 
     [Theory]
     [MemberData(nameof(NonIteCandidates))]
+    [Trait("Category", "Unit")]
     public void HiringNonItEmployees(EmployeeHiringRequest candidate)
     {
         // Given

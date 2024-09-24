@@ -4,6 +4,7 @@ namespace Hr.Tests;
 public class StandardIdGeneratorTests
 {
     [Fact]
+    [Trait("Category", "Unit")]
     public void GeneratesIdsForPeopleThatAreInIt()
     {
         IGenerateEmployeeIds generator = new StandardIdGenerator();
@@ -15,6 +16,7 @@ public class StandardIdGeneratorTests
 
 
     [Fact]
+    [Trait("Category", "Unit")]
     public void GeneratesIdsForPeopleThatAreNotIt()
     {
         IGenerateEmployeeIds generator = new StandardIdGenerator();

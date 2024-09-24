@@ -5,6 +5,7 @@ public class HiringRequestsTests
 {
     //name is required. Cannot be null, cannot be empty.Has to be at least 5 characters, and no more than 200
     [Theory]
+    [Trait("Category", "Unit")]
     [InlineData("Robert")]
     [InlineData("Rober")]
     [InlineData("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")]
@@ -15,6 +16,7 @@ public class HiringRequestsTests
     }
 
     [Theory]
+    [Trait("Category", "Unit")]
     [InlineData("bob")]
     [InlineData("bobs")]
     [InlineData("")]

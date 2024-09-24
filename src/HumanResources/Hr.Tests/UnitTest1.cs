@@ -5,6 +5,7 @@ namespace Hr.Tests;
 public class CalculatorTests
 {
     [Fact]// This is a "fact" your test only proves one thing.
+    [Trait("Category", "Unit")]
     public void CanAddTwoAndTwoToGetFour()
     {
         // Given (Arrange)
@@ -16,6 +17,7 @@ public class CalculatorTests
     }
 
     [Theory]
+    [Trait("Category", "Unit")]
     [InlineData(2, 2, 4)]
     [InlineData(2, 3, 5)]
     [InlineData(1, 3, 4)]
@@ -29,6 +31,7 @@ public class CalculatorTests
     }
 
     [Fact]
+    [Trait("Category", "Unit")]
     public void CanAddTwoDecimals()
     {
         var myCalculator = new Calculator();
