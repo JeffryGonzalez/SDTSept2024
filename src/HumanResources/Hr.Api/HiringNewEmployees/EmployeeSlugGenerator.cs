@@ -5,6 +5,7 @@ public class EmployeeSlugGenerator(ICheckForSlugUniqueness uniquenessChecker) : 
 {
     public async Task<string> GenerateIdForItAsync(string name)
     {
+        // is the name not null, is it at least 5 letters, and no more than 200
         // Johnny Marr -> IMARR-JOHNNY-B
         var spaceAt = name.IndexOf(' ');
         var firstName = name[..spaceAt];

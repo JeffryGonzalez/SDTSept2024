@@ -48,6 +48,38 @@ public class SubmittingHiringRequests
 
     }
 
+    [Fact]
+    [Trait("Category", "System")]
+    public async Task ValidatesEmployeeHiringRequests()
+    {
+        var dateOfHire = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
+        var stubbedIdGenerator = Substitute.For<IGenerateSlugIdsForEmployees>();
+        stubbedIdGenerator.GenerateIdForItAsync("x").Returns("x");
+
+
+        var fakeClock = new FakeTimeProvider(dateOfHire);
+        var host = await AlbaHost.For<Program>(config =>
+        {   // When you want to replace a service with another one.
+            config.ConfigureTestServices(services =>
+            {
+                services.AddSingleton<TimeProvider>((sp) => fakeClock);
+                var fakeUniqueChecker = Substitute.For<ICheckForSlugUniqueness>();
+                fakeUniqueChecker.IsUniqueIdAsync(Arg.Any<string>()).Returns(true);
+                services.AddScoped<ICheckForSlugUniqueness>((sp) => fakeUniqueChecker);
+            });
+        });
+
+        var hiringRequest = new EmployeeHiringRequestModel { Name = null };
+
+
+        var response = await host.Scenario(api =>
+        {
+            api.Post.Json(hiringRequest).ToUrl("/departments/IT/hiring-requests");
+            api.StatusCodeShouldBe(400);
+        });
+
+    }
+
 }
 
 
