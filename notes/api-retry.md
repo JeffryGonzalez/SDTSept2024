@@ -50,3 +50,13 @@ Location: /departments/{department}/hiring-requests/GUID
 ## GET /departments/it/employees
 ## GET /departments/it/employees/ismith-bob
 ## GET /employees/ismith-bob
+
+
+GET /policies/{policyNumber}
+
+{
+    ....
+
+}
+
+GET /policies/{policyNumber}/vehicles

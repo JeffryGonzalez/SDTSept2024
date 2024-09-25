@@ -1,7 +1,5 @@
 using FluentValidation;
-using Hr.Api.Controllers;
 using Hr.Api.HiringNewEmployees;
-using Hr.Api.HiringNewEmployees.Services;
 using HtTemplate.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,9 +11,9 @@ builder.Services.AddCustomOasGeneration();
 
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<IGenerateEmployeeIds, StandardIdGenerator>();
-builder.Services.AddSingleton<EmployeeHiringService>();
-builder.Services.AddScoped<IGenerateSlugIdsForEmployees, EmployeeSlugGenerator>();
+//builder.Services.AddSingleton<IGenerateEmployeeIds, StandardIdGenerator>();
+//builder.Services.AddSingleton<EmployeeHiringService>();
+//builder.Services.AddScoped<IGenerateSlugIdsForEmployees, EmployeeSlugGenerator>();
 builder.Services.AddValidatorsFromAssemblyContaining<EmployeeHiringRequestValidator>(); // this is werid, but I'll show you why they do it this way tomorrow.
 
 

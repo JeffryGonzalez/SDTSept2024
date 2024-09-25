@@ -20,3 +20,39 @@ public class EmployeeHiringRequestValidator : AbstractValidator<EmployeeHiringRe
 }
 
 public record EmployeeHiringRequestResult(string Id, string Name, string Department, decimal Salary, DateTimeOffset HireDate);
+
+
+public record EmployeeHiringRequestResponseModel
+{
+
+    public required HiringRequestPersonalInformation PersonalInformation { get; init; }
+
+    public required DateTimeOffset ApplicationDate { get; init; }
+    public required string Status { get; init; }
+
+    public Dictionary<string, string> Links { get; init; } = new();
+}
+
+public record HiringRequestPersonalInformation
+{
+    public required string Name { get; init; }
+    public required string DepartmentAppliedTo { get; init; }
+}
+
+/*{
+    "id": "GUID",
+    "personalInformation": {
+        "name": "Bob Smith",
+        "departmentAppliedTo": "{department}"
+    }, 
+    "applicationDate": "DTO",
+    "status": "Hired",
+    "links": [        
+        "self": "/departments/{department}/hiring-requests/GUID"
+        "employee": "/employees/ismith-bob",
+        "employee:role": "/departments/it",
+        "hiring-requests:submitter": "/employees/sjones-sue"
+
+    ]
+
+}*/

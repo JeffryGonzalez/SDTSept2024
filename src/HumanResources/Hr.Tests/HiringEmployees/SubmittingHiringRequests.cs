@@ -14,9 +14,9 @@ public class SubmittingHiringRequests
     [Trait("Category", "System")]
     [Trait("Feature", "SomeFeatureName")]
     [Trait("Bug", "83989389")]
-    [InlineData("Bob Smith", "ISMITH-BOB")]
-    [InlineData("Jill Jones", "IJONES-JILL")]
-    public async Task SubmittingAHiringRequestForIt(string name, string expectedId)
+    [InlineData("Bob Smith")]
+    [InlineData("Jill Jones")]
+    public async Task SubmittingAHiringRequestForIt(string name)
     {
         var dateOfHire = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
         var stubbedIdGenerator = Substitute.For<IGenerateSlugIdsForEmployees>();
@@ -35,20 +35,33 @@ public class SubmittingHiringRequests
 
         var hiringRequest = new EmployeeHiringRequestModel { Name = name };
 
-        var expectedResponse = new EmployeeHiringRequestResult(expectedId, name, "IT", 182000M, dateOfHire);
+        var expectedResponse = new EmployeeHiringRequestResponseModel
+        {
+
+            ApplicationDate = dateOfHire,
+            Status = "Hired",
+            PersonalInformation = new HiringRequestPersonalInformation { DepartmentAppliedTo = "IT", Name = name }
+        };
         var response = await host.Scenario(api =>
          {
              api.Post.Json(hiringRequest).ToUrl("/departments/IT/hiring-requests");
          });
 
-        var returnedBody = await response.ReadAsJsonAsync<EmployeeHiringRequestResult>();
+        var returnedBody = await response.ReadAsJsonAsync<EmployeeHiringRequestResponseModel>();
 
         Assert.NotNull(returnedBody);
-        //  Assert.Equal(expectedResponse, returnedBody);
-        Assert.Equal(expectedResponse.Name, returnedBody.Name);
-        // etc. etc.
-        Assert.NotNull(returnedBody.Id); // "B.S." (Slime)
+        // Assert.Equal(expectedResponse, returnedBody);
+        var newResource = returnedBody.Links["self"];
 
+        var lookupResponse = await host.Scenario(api =>
+        {
+            api.Get.Url(newResource);
+        });
+
+
+        var lookupBody = await response.ReadAsJsonAsync<EmployeeHiringRequestResponseModel>();
+        Assert.NotNull(lookupResponse);
+        Assert.Equal(lookupBody, returnedBody);
 
     }
 
