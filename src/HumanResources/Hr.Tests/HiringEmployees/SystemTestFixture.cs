@@ -1,40 +1,45 @@
 
 using Alba;
 using Alba.Security;
+using CioNotificationApiTypes;
+using Hr.Api.HiringNewEmployees.Services;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Time.Testing;
+using NSubstitute;
+using Testcontainers.PostgreSql;
+using WireMock.Server;
 
 namespace Ht.Tests.HiringEmployees;
 
 public class SystemTestFixture : IAsyncLifetime
 {
     public IAlbaHost Host = null!;
+    private PostgreSqlContainer _container = new PostgreSqlBuilder()
+        .WithImage("postgres:16.2-bullseye")
+        .Build();
+    public WireMockServer MockApiServer = null!;
     public async Task InitializeAsync()
     {
-        var dateOfHire = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
 
-        var stubbedUser = new AuthenticationStub().WithName("Barbara").With("role", "manager"); // // sub claim
+        MockApiServer = WireMockServer.Start();
+        var dateOfHire = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
+        var stubbedUser = new AuthenticationStub("Barbara");
+        var fakeCioNotification = Substitute.For<INotifyTheCto>();
+        fakeCioNotification.NotifyCioOfNewItHireAsync(Arg.Any<NewItHiringNotificationRequest>())
+
+            .Returns(new NewItHiringNotificationResponse { NotificationDeliveryReceipt = "Looks Good" });
         var fakeClock = new FakeTimeProvider(dateOfHire);
+        await _container.StartAsync();
         Host = await AlbaHost.For<Program>(config =>
         {
+            config.UseSetting("ConnectionStrings:hr", _container.GetConnectionString());
+            config.UseSetting("cioApiUrl", MockApiServer.Url);
             config.ConfigureTestServices(services =>
             {
-                //    var fakeEmployeeLookup = Substitute.For<EmployeeLookup>();
-                //    var fakeEmployee = new EmployeeHiringRequestEntity
-                //    {
-                //        ApplicationDate = dateOfHire,
-                //        Id = Guid.NewGuid(),
-                //        EmployeeId = "Idon't know",
-                //        PersonalInformation = new Hr.Api.HiringNewEmployees.Models.HiringRequestPersonalInformation { Name = "Some Name", DepartmentAppliedTo = "IT" },
-                //        Status = "Unknown",
-                //        SubmittedBy = "Barbara"
 
-                //    };
-                //    fakeEmployeeLookup.GetEmployeeByIdAsync(Arg.Any<string>()).Returns(
-                //        fakeEmployee);
                 services.AddSingleton<TimeProvider>((sp) => fakeClock);
-                // services.AddScoped<ILookupEmployees>(sp => fakeEmployeeLookup);
+                //  services.AddScoped<INotifyTheCto>(sp => fakeCioNotification);
 
             });
         }, stubbedUser);
@@ -42,6 +47,9 @@ public class SystemTestFixture : IAsyncLifetime
     public async Task DisposeAsync()
     {
         await Host.DisposeAsync();
+        await _container.StopAsync();
+        MockApiServer.Stop();
+        MockApiServer.Dispose();
     }
 
 }

@@ -11,7 +11,16 @@ builder.AddCustomFeatureManagement();
 
 builder.Services.AddCustomServices();
 builder.Services.AddCustomOasGeneration();
+var url = builder.Configuration.GetValue<string>("cioApiUrl") ?? throw new Exception("No CIO Url");
+builder.Services.AddHttpClient<CioNotificationHttpClient>(client =>
+{
+    client.BaseAddress = new Uri(url);
+});
 
+builder.Services.AddScoped<INotifyTheCto>(sp =>
+{
+    return sp.GetRequiredService<CioNotificationHttpClient>();
+});
 builder.Services.AddControllers();
 builder.Services.AddScoped<ILookupEmployees, EmployeeLookup>();
 builder.Services.AddScoped<IGenerateSlugIdsForEmployees, EmployeeSlugGenerator>();

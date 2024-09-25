@@ -12,7 +12,8 @@ public class HiringRequestsController(TimeProvider clock, IDocumentSession sessi
     //[Authorize(Policy = "IsHiringManager")]
     public async Task<ActionResult> HireAnEmployee(
         [FromBody] EmployeeHiringRequestModel request,
-        [FromServices] EmployeeHiringRequestValidator validator
+        [FromServices] EmployeeHiringRequestValidator validator,
+        [FromServices] INotifyTheCto http
         )
     {
         var department = "it";
@@ -22,6 +23,7 @@ public class HiringRequestsController(TimeProvider clock, IDocumentSession sessi
         {
             return BadRequest(validations.ToDictionary());
         }
+
 
         var requestId = Guid.NewGuid();
         var sub = User.Identity?.Name;
@@ -47,6 +49,9 @@ public class HiringRequestsController(TimeProvider clock, IDocumentSession sessi
         entity.Links.Add("departments:employee", $"/departments/it/employees/{employeeId}");
         // Save this hiring request somewhere.
         entity.EmployeeId = employeeId;
+
+        var receipt = await http.NotifyCioOfNewItHireAsync(new CioNotificationApiTypes.NewItHiringNotificationRequest { Name = entity.PersonalInformation.Name, WhenHired = clock.GetUtcNow() });
+        entity.CioReceipt = receipt.NotificationDeliveryReceipt;
         session.Store(entity);
         await session.SaveChangesAsync();
         var mapper = new EmployeeHiringRequestMapper();

@@ -2,6 +2,8 @@
 using Alba;
 using Hr.Api.HiringNewEmployees.Models;
 using Ht.Tests.HiringEmployees;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 
 namespace Hr.Tests.HiringEmployees;
 [Collection("SharedSystemTestFixture")]
@@ -12,6 +14,12 @@ public class SubmittingHiringRequests
     public SubmittingHiringRequests(SystemTestFixture fixture)
     {
         _host = fixture.Host;
+        fixture.MockApiServer.Given(
+            Request.Create().WithPath("/new-hire-notifications")
+            .UsingPost()
+           ).RespondWith(
+            Response.Create()
+            .WithBodyAsJson(new CioNotificationApiTypes.NewItHiringNotificationResponse { NotificationDeliveryReceipt = "Tacos ARe Good" }));
     }
 
 

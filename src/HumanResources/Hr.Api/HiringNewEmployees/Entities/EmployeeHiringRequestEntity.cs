@@ -13,6 +13,8 @@ public record EmployeeHiringRequestEntity
     public required string Status { get; init; }
     public required string SubmittedBy { get; init; }
     public string? EmployeeId { get; set; }
+
+    public string? CioReceipt { get; set; }
     public Dictionary<string, string> Links { get; init; } = new();
 }
 
