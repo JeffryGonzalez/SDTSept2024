@@ -61,7 +61,10 @@ public class SubmittingHiringRequests
 
         var lookupBody = await response.ReadAsJsonAsync<EmployeeHiringRequestResponseModel>();
         Assert.NotNull(lookupResponse);
-        Assert.Equal(lookupBody, returnedBody);
+        Assert.Equal(lookupBody.PersonalInformation, returnedBody.PersonalInformation);
+        Assert.Equal(lookupBody.ApplicationDate, returnedBody.ApplicationDate);
+        Assert.Equal(lookupBody.Status, returnedBody.Status);
+        Assert.Equal(lookupBody.Links, returnedBody.Links); // Records don't do deep equality.
 
     }
 

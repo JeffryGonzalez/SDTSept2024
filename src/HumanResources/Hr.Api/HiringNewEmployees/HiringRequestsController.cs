@@ -1,6 +1,8 @@
-﻿namespace Hr.Api.HiringNewEmployees;
+﻿using Marten;
 
-public class HiringRequestsController(TimeProvider clock) : ControllerBase
+namespace Hr.Api.HiringNewEmployees;
+
+public class HiringRequestsController(TimeProvider clock, IDocumentSession session) : ControllerBase
 {
     [HttpPost("/departments/IT/hiring-requests")]
     public async Task<ActionResult> HireAnEmployee(
@@ -19,9 +21,9 @@ public class HiringRequestsController(TimeProvider clock) : ControllerBase
         // if the new employee is in IT, then send a notification to the CIO because he likes to buy them coffee.
         // return Ok(new EmployeeHiringRequestResult(id, request.Name, "IT", 182000M, clock.GetUtcNow()));
         var requestId = Guid.NewGuid();
-        var response = new EmployeeHiringRequestResponseModel
+        var entity = new EmployeeHiringRequestEntity
         {
-
+            Id = requestId,
             ApplicationDate = clock.GetUtcNow(),
             Status = "Hired",
             PersonalInformation = new HiringRequestPersonalInformation
@@ -31,18 +33,32 @@ public class HiringRequestsController(TimeProvider clock) : ControllerBase
             }
 
         };
-        response.Links.Add("self",
+        entity.Links.Add("self",
             $"/departments/{department}/hiring-requests/{requestId}");
 
 
-
+        // Save this hiring request somewhere.
+        session.Store(entity);
+        await session.SaveChangesAsync();
+        var mapper = new EmployeeHiringRequestMapper();
+        var response = mapper.ToResponseModel(entity);
         return Ok(response);
     }
 
     [HttpGet("/departments/{department}/hiring-requests/{requestId:guid}")]
     public async Task<ActionResult> GetEmployeeByDepartmentAsync(string department, Guid requestId)
     {
-        return Ok();
+        var entity = await session.LoadAsync<EmployeeHiringRequestEntity>(requestId);
+        if (entity == null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            var mapper = new EmployeeHiringRequestMapper();
+            var response = mapper.ToResponseModel(entity);
+            return Ok(response);
+        }
     }
 }
 

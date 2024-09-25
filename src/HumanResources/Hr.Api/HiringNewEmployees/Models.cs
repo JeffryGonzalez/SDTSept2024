@@ -22,9 +22,19 @@ public class EmployeeHiringRequestValidator : AbstractValidator<EmployeeHiringRe
 public record EmployeeHiringRequestResult(string Id, string Name, string Department, decimal Salary, DateTimeOffset HireDate);
 
 
+public record EmployeeHiringRequestEntity
+{
+    public required Guid Id { get; set; }
+
+    public required HiringRequestPersonalInformation PersonalInformation { get; init; }
+
+    public required DateTimeOffset ApplicationDate { get; init; }
+    public required string Status { get; init; }
+
+    public Dictionary<string, string> Links { get; init; } = new();
+}
 public record EmployeeHiringRequestResponseModel
 {
-
     public required HiringRequestPersonalInformation PersonalInformation { get; init; }
 
     public required DateTimeOffset ApplicationDate { get; init; }
