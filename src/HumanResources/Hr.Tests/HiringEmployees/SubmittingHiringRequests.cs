@@ -8,8 +8,31 @@ using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 
 namespace Hr.Tests.HiringEmployees;
-public class SubmittingHiringRequests
+public class SubmittingHiringRequests : IAsyncLifetime
 {
+    private IAlbaHost _host = null!;
+    public async Task InitializeAsync()
+    {
+        var dateOfHire = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
+        var stubbedIdGenerator = Substitute.For<IGenerateSlugIdsForEmployees>();
+
+        var fakeClock = new FakeTimeProvider(dateOfHire);
+        _host = await AlbaHost.For<Program>(config =>
+        {
+            config.ConfigureTestServices(services =>
+            {
+                services.AddSingleton<TimeProvider>((sp) => fakeClock);
+                var fakeUniqueChecker = Substitute.For<ICheckForSlugUniqueness>();
+
+            });
+        });
+    }
+    public async Task DisposeAsync()
+    {
+        await _host.DisposeAsync();
+    }
+
+
     [Theory]
     [Trait("Category", "System")]
     [Trait("Feature", "SomeFeatureName")]
@@ -18,42 +41,18 @@ public class SubmittingHiringRequests
     [InlineData("Jill Jones")]
     public async Task SubmittingAHiringRequestForIt(string name)
     {
-        var dateOfHire = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
-        var stubbedIdGenerator = Substitute.For<IGenerateSlugIdsForEmployees>();
-        stubbedIdGenerator.GenerateIdForItAsync(name).Returns(name.ToUpper());
-        var fakeClock = new FakeTimeProvider(dateOfHire);
-        var host = await AlbaHost.For<Program>(config =>
-        {   // When you want to replace a service with another one.
-            config.ConfigureTestServices(services =>
-            {
-                services.AddSingleton<TimeProvider>((sp) => fakeClock);
-                var fakeUniqueChecker = Substitute.For<ICheckForSlugUniqueness>();
-                fakeUniqueChecker.IsUniqueIdAsync(Arg.Any<string>()).Returns(true);
-                services.AddScoped<ICheckForSlugUniqueness>((sp) => fakeUniqueChecker);
-            });
-        });
-
         var hiringRequest = new EmployeeHiringRequestModel { Name = name };
-
-        var expectedResponse = new EmployeeHiringRequestResponseModel
-        {
-
-            ApplicationDate = dateOfHire,
-            Status = "Hired",
-            PersonalInformation = new HiringRequestPersonalInformation { DepartmentAppliedTo = "IT", Name = name }
-        };
-        var response = await host.Scenario(api =>
+        var response = await _host.Scenario(api =>
          {
-             api.Post.Json(hiringRequest).ToUrl("/departments/IT/hiring-requests");
+             api.Post.Json(hiringRequest).ToUrl("/departments/it/hiring-requests");
          });
-
         var returnedBody = await response.ReadAsJsonAsync<EmployeeHiringRequestResponseModel>();
 
         Assert.NotNull(returnedBody);
-        // Assert.Equal(expectedResponse, returnedBody);
+
         var newResource = returnedBody.Links["self"];
 
-        var lookupResponse = await host.Scenario(api =>
+        var lookupResponse = await _host.Scenario(api =>
         {
             api.Get.Url(newResource);
         });
@@ -78,21 +77,12 @@ public class SubmittingHiringRequests
 
 
         var fakeClock = new FakeTimeProvider(dateOfHire);
-        var host = await AlbaHost.For<Program>(config =>
-        {   // When you want to replace a service with another one.
-            config.ConfigureTestServices(services =>
-            {
-                services.AddSingleton<TimeProvider>((sp) => fakeClock);
-                var fakeUniqueChecker = Substitute.For<ICheckForSlugUniqueness>();
-                fakeUniqueChecker.IsUniqueIdAsync(Arg.Any<string>()).Returns(true);
-                services.AddScoped<ICheckForSlugUniqueness>((sp) => fakeUniqueChecker);
-            });
-        });
-
-        var hiringRequest = new EmployeeHiringRequestModel { Name = null };
 
 
-        var response = await host.Scenario(api =>
+        var hiringRequest = new EmployeeHiringRequestModel { Name = null! };
+
+
+        var response = await _host.Scenario(api =>
         {
             api.Post.Json(hiringRequest).ToUrl("/departments/IT/hiring-requests");
             api.StatusCodeShouldBe(400);

@@ -22,12 +22,10 @@ public class HiringRequestsTests
     [InlineData("")]
     [InlineData(null)]
     [InlineData("ZXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")]
-    public void InvalidNames(string name)
+    public void InvalidNames(string? name)
     {
-
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-        EmployeeHiringRequest.CreateHiringRequest(name, Departments.SALES));
-
+        EmployeeHiringRequest.CreateHiringRequest(name!, Departments.SALES));
     }
 
 

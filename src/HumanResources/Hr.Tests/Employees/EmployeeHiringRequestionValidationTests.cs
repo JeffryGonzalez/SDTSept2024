@@ -9,7 +9,7 @@ public class EmployeeHiringRequestionValidationTests
     [InlineData(null)]
     [InlineData("1234")]
     [InlineData("ZXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")]
-    public void InvalidHiringRequests(string name)
+    public void InvalidHiringRequests(string? name)
     {
 
         var validator = new EmployeeHiringRequestValidator();
