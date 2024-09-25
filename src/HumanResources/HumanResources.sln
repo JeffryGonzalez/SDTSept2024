@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.Api", "Hr.Api\Hr.Api.csproj", "{69C5284B-65F3-49F2-8F3E-E9E1617DA757}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api", "Hr.Api\Hr.Api.csproj", "{69C5284B-65F3-49F2-8F3E-E9E1617DA757}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.Tests", "Hr.Tests\Hr.Tests.csproj", "{68D7410C-151A-4736-A09D-59113BEB69F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Tests", "Hr.Tests\Hr.Tests.csproj", "{68D7410C-151A-4736-A09D-59113BEB69F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CioNotificationApiTypes", "CioNotificationApiTypes\CioNotificationApiTypes.csproj", "{8E159A23-3FD3-4251-AB2A-FBC9BBD0EB22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{68D7410C-151A-4736-A09D-59113BEB69F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68D7410C-151A-4736-A09D-59113BEB69F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68D7410C-151A-4736-A09D-59113BEB69F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E159A23-3FD3-4251-AB2A-FBC9BBD0EB22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E159A23-3FD3-4251-AB2A-FBC9BBD0EB22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E159A23-3FD3-4251-AB2A-FBC9BBD0EB22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E159A23-3FD3-4251-AB2A-FBC9BBD0EB22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
