@@ -1,6 +1,6 @@
 ﻿
 using Alba;
-using Hr.Api.HiringNewEmployees;
+using Hr.Api.HiringNewEmployees.Models;
 using Hr.Api.HiringNewEmployees.Services;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

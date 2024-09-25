@@ -1,5 +1,5 @@
 using FluentValidation;
-using Hr.Api.HiringNewEmployees;
+using Hr.Api.HiringNewEmployees.Models;
 using HtTemplate.Configuration;
 using Marten;
 

@@ -1,5 +1,7 @@
 ﻿using FluentValidation.TestHelper;
-using Hr.Api.HiringNewEmployees;
+
+
+using Hr.Api.HiringNewEmployees.Models;
 namespace Hr.Tests.Employees;
 public class EmployeeHiringRequestionValidationTests
 {

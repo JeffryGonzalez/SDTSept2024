@@ -93,7 +93,7 @@ public class EmployeeHiringServiceTests
 }
 
 
-/* Todo:
+/*
  * 
 If you are are in the IT department:
 Your employee ID starts with I, then a unique identifier.

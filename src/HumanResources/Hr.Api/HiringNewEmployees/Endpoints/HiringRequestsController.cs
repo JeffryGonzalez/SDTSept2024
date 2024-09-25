@@ -1,6 +1,8 @@
-﻿using Marten;
+﻿using Hr.Api.HiringNewEmployees.Entities;
+using Hr.Api.HiringNewEmployees.Models;
+using Marten;
 
-namespace Hr.Api.HiringNewEmployees;
+namespace Hr.Api.HiringNewEmployees.Endpoints;
 
 public class HiringRequestsController(TimeProvider clock, IDocumentSession session) : ControllerBase
 {
