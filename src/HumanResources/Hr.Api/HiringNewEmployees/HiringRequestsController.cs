@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+﻿using Hr.Api.HiringNewEmployees.Services;
 
 namespace Hr.Api.HiringNewEmployees;
 
@@ -22,29 +22,6 @@ public class HiringRequestsController(TimeProvider clock, IGenerateSlugIdsForEmp
     }
 }
 
-public record EmployeeHiringRequestModel
-{
 
 
-    public string Name { get; set; } = string.Empty;
-};
 
-public class EmployeeHiringRequestValidator : AbstractValidator<EmployeeHiringRequestModel>
-{
-    public EmployeeHiringRequestValidator()
-    {
-        var message = "Invalid Name";
-        //RuleFor(e => e.Name).NotEmpty().MinimumLength(5).MaximumLength(200).WithMessage("Invalid Name");
-        RuleFor(e => e.Name).NotEmpty().WithMessage(message);
-        RuleFor(e => e.Name).MinimumLength(5).WithMessage(message).MaximumLength(200).WithMessage(message);
-
-    }
-}
-
-public record EmployeeHiringRequestResult(string Id, string Name, string Department, decimal Salary, DateTimeOffset HireDate);
-
-public interface IGenerateSlugIdsForEmployees
-{
-    Task<string> GenerateIdForItAsync(string name);  // Bob Smith - ISMITH-BOB
-    Task<string> GenerateIdForNonItAsync(string name);
-}

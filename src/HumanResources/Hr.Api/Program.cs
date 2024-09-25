@@ -1,6 +1,7 @@
 using FluentValidation;
 using Hr.Api.Controllers;
 using Hr.Api.HiringNewEmployees;
+using Hr.Api.HiringNewEmployees.Services;
 using HtTemplate.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
