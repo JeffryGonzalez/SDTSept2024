@@ -26,17 +26,23 @@ public class HiringRequestsController(TimeProvider clock) : ControllerBase
             Status = "Hired",
             PersonalInformation = new HiringRequestPersonalInformation
             {
-                DepartmentAppliedTo = "IT",
+                DepartmentAppliedTo = department,
                 Name = request.Name
             }
 
         };
         response.Links.Add("self",
-            $"/departments/{department}/hiring-request/{requestId}");
+            $"/departments/{department}/hiring-requests/{requestId}");
 
 
 
         return Ok(response);
+    }
+
+    [HttpGet("/departments/{department}/hiring-requests/{requestId:guid}")]
+    public async Task<ActionResult> GetEmployeeByDepartmentAsync(string department, Guid requestId)
+    {
+        return Ok();
     }
 }
 
