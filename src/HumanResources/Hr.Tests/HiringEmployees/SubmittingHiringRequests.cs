@@ -23,10 +23,12 @@ public class SubmittingHiringRequests
     [InlineData("Jill Jones")]
     public async Task SubmittingAHiringRequestForIt(string name)
     {
+        // If this is sumbitted for IT, you are going to be an employee, right away.
         var hiringRequest = new EmployeeHiringRequestModel { Name = name };
         var response = await _host.Scenario(api =>
          {
              api.Post.Json(hiringRequest).ToUrl("/departments/it/hiring-requests");
+
          });
         var returnedBody = await response.ReadAsJsonAsync<EmployeeHiringRequestResponseModel>();
 
@@ -47,12 +49,26 @@ public class SubmittingHiringRequests
         Assert.Equal(lookupBody.Status, returnedBody.Status);
         Assert.Equal(lookupBody.Links, returnedBody.Links); // Records don't do deep equality.
 
+
+        var employeeResponse = await _host.Scenario(api =>
+        {
+            api.Get.Url(lookupBody.Links["departments:employee"]);
+        });
+
+        var employeeBody = await employeeResponse.ReadAsJsonAsync<DummyModel>();
+
+        Assert.NotNull(employeeBody);
+        Assert.Equal(name, employeeBody.Name);
     }
 
 
 
 }
 
+public class DummyModel
+{
+    public string Name { get; set; }
+}
 
 /* System Test
 We are going to start with testing this from the perspective of the "user" of this API.

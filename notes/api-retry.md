@@ -20,6 +20,7 @@ Location: /departments/{department}/hiring-requests/GUID
     "links": [        
         "self": "/departments/{department}/hiring-requests/GUID"
         "employee": "/employees/ismith-bob",
+        "departments:employee": "/departments/{department}/employees/itsmith-bob"
         "employee:role": "/departments/it",
         "hiring-requests:submitter": "/employees/sjones-sue"
 

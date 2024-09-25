@@ -11,7 +11,8 @@ public record EmployeeHiringRequestEntity
 
     public required DateTimeOffset ApplicationDate { get; init; }
     public required string Status { get; init; }
-
+    public required string SubmittedBy { get; init; }
+    public string? EmployeeId { get; set; }
     public Dictionary<string, string> Links { get; init; } = new();
 }
 
