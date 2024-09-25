@@ -1,6 +1,5 @@
 ﻿namespace Hr.Api.HiringNewEmployees.Models;
 
-public record EmployeeHiringRequestResult(string Id, string Name, string Department, decimal Salary, DateTimeOffset HireDate);
 public record EmployeeHiringRequestResponseModel
 {
     public required HiringRequestPersonalInformation PersonalInformation { get; init; }

@@ -19,9 +19,7 @@ public class HiringRequestsController(TimeProvider clock, IDocumentSession sessi
         {
             return BadRequest(validations.ToDictionary());
         }
-        //string id = await employeeIdGenerator.GenerateIdForItAsync(request.Name);
-        // if the new employee is in IT, then send a notification to the CIO because he likes to buy them coffee.
-        // return Ok(new EmployeeHiringRequestResult(id, request.Name, "IT", 182000M, clock.GetUtcNow()));
+
         var requestId = Guid.NewGuid();
         var entity = new EmployeeHiringRequestEntity
         {

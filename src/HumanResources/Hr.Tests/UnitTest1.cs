@@ -4,14 +4,21 @@ namespace Hr.Tests;
 
 public class CalculatorTests
 {
+
+    private Calculator calculator;
+
+    public CalculatorTests()
+    {
+        calculator = new Calculator();
+    }
     [Fact]// This is a "fact" your test only proves one thing.
     [Trait("Category", "Unit")]
     public void CanAddTwoAndTwoToGetFour()
     {
         // Given (Arrange)
-        var myCalculator = new Calculator();
+
         // When (Act)
-        int result = myCalculator.Add(2, 2); // System Under Test (SUT)
+        int result = calculator.Add(2, 2); // System Under Test (SUT)
         // Then (Assert)
         Assert.Equal(4, result);
     }
@@ -24,9 +31,7 @@ public class CalculatorTests
 
     public void CanAddAnyTwoIntegers(int a, int b, int expected)
     {
-        var myCalculator = new Calculator();
-
-        var result = myCalculator.Add(a, b);
+        var result = calculator.Add(a, b);
         Assert.Equal(expected, result);
     }
 
@@ -34,9 +39,9 @@ public class CalculatorTests
     [Trait("Category", "Unit")]
     public void CanAddTwoDecimals()
     {
-        var myCalculator = new Calculator();
 
-        var result = myCalculator.Add(1.50M, 1.50M);
+
+        var result = calculator.Add(1.50M, 1.50M);
 
         Assert.Equal(3M, result);
     }

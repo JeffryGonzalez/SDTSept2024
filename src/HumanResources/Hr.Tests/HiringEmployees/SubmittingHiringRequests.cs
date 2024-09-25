@@ -71,13 +71,6 @@ public class SubmittingHiringRequests : IAsyncLifetime
     [Trait("Category", "System")]
     public async Task ValidatesEmployeeHiringRequests()
     {
-        var dateOfHire = new DateTimeOffset(1969, 4, 20, 23, 59, 00, TimeSpan.FromHours(-4));
-        var stubbedIdGenerator = Substitute.For<IGenerateSlugIdsForEmployees>();
-        stubbedIdGenerator.GenerateIdForItAsync("x").Returns("x");
-
-
-        var fakeClock = new FakeTimeProvider(dateOfHire);
-
 
         var hiringRequest = new EmployeeHiringRequestModel { Name = null! };
 
